@@ -26,11 +26,11 @@ const sessionOptions = {
     saveUninitialized: false,
   };
 if (process.env.NODE_ENV !== "development") {
-sessionOptions.proxy = true;
-sessionOptions.cookie = {
-    sameSite: "none",
-    secure: true,
-    domain: process.env.NODE_SERVER_DOMAIN,
+    sessionOptions.proxy = true;
+    sessionOptions.cookie = {
+        sameSite: "none",
+        secure: true,
+        domain: process.env.NODE_SERVER_DOMAIN,
 };
 }
 app.use(session(sessionOptions));
