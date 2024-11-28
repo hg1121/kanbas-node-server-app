@@ -1,6 +1,7 @@
 import * as dao from "./dao.js";
 import * as modulesDao from "../Modules/dao.js";
 import * as assignmentsDao from "../Assignment/dao.js";
+import * as quizzesDao from "../Quizzes/dao.js";
 
 export default function CourseRoutes(app) {
   // ****** courses routes
@@ -75,4 +76,32 @@ export default function CourseRoutes(app) {
     assignmentsDao.deleteAssignment(assignmentId);
     res.sendStatus(204);
 });
+
+
+// ******quizzes routes
+app.post("/api/courses/:courseId/quizzes", (req, res) => {
+  const newQuiz = quizzesDao.createQuiz(req.body);
+  res.json(newQuiz);
+});
+
+app.get("/api/courses/:courseId/quizzes/:quizId", (req, res) => {
+  const quiz = quizzesDao.findQuizByQuizId(req.params.quizId);
+  res.json(quiz);
+})
+
+app.get("/api/courses/:courseId/quizzes", (req, res) => {
+  const quizzes = quizzesDao.findQuizzesByCourseId(req.params.courseId);
+  res.json(quizzes);
+});
+
+app.put("/api/courses/:courseId/quizzes/:quizId", (req, res) => {
+  const updatedQuiz = quizzesDao.updateQuiz(req.params.quizId, req.body);
+  res.json(updatedQuiz);
+});
+
+app.delete("/api/courses/:courseId/quizzes/:quizId", (req, res) => {
+  quizzesDao.deleteQuiz(req.params.quizId);
+  res.sendStatus(204);
+});
+
 }
