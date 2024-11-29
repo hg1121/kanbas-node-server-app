@@ -21,6 +21,7 @@ app.use(
     origin: process.env.NETLIFY_URL || "http://localhost:3000",
   })
 );
+console.log("NETLIFY_URL:", process.env.NETLIFY_URL);
 
 // configure server sessions after cors
 const sessionOptions = {
