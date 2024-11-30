@@ -1,22 +1,43 @@
-import Database from "../Database/index.js";
+// import Database from "../Database/index.js";
+import model from "./model.js";
 
-export function enrollUserInCourse(userId, courseId) {
-//   console.log("userId", "courseId", userId, courseId)
-  const { enrollments } = Database;
-  enrollments.push({ _id: String(enrollments.length + 1), user: userId, course: courseId });
-//   console.log("enrollments", enrollments[enrollments.length - 1]);
-}
+export async function findCoursesForUser(userId) {
+  const enrollments = await model.find({ user: userId }).populate("course");
+  // console.log("enrollments", enrollments);
+  return enrollments.map((enrollment) => enrollment.course);
+ }
 
-export function unenrollUserFromCourse(userId, courseId) {
-    const { enrollments } = Database;
-    // Find the index of the enrollment record that matches the userId and courseId
-    const enrollmentIndex = enrollments.findIndex(
-      (enrollment) => enrollment.user === userId && enrollment.course === courseId
-    );
-    // If the enrollment record exists, remove it
-    if (enrollmentIndex !== -1) {
-      enrollments.splice(enrollmentIndex, 1); // Remove the enrollment record
-    } else {
-      console.log(`Enrollment not found for user ${userId} in course ${courseId}`);
-    }
-  }
+ export async function findUsersForCourse(courseId) {
+  const enrollments = await model.find({ course: courseId }).populate("user");
+  return enrollments.map((enrollment) => enrollment.user);
+ }
+
+ export function enrollUserInCourse(user, course) {
+  return model.create({ user, course });
+ }
+ 
+ export function unenrollUserFromCourse(user, course) {
+  return model.deleteOne({ user, course });
+ }
+
+ 
+// export async function enrollUserInCourse(userId, courseId) {
+// //   console.log("userId", "courseId", userId, courseId)
+//   const { enrollments } = Database;
+//   enrollments.push({ _id: String(enrollments.length + 1), user: userId, course: courseId });
+// //   console.log("enrollments", enrollments[enrollments.length - 1]);
+// }
+
+// export async function unenrollUserFromCourse(userId, courseId) {
+//     const { enrollments } = Database;
+//     // Find the index of the enrollment record that matches the userId and courseId
+//     const enrollmentIndex = enrollments.findIndex(
+//       (enrollment) => enrollment.user === userId && enrollment.course === courseId
+//     );
+//     // If the enrollment record exists, remove it
+//     if (enrollmentIndex !== -1) {
+//       enrollments.splice(enrollmentIndex, 1); // Remove the enrollment record
+//     } else {
+//       console.log(`Enrollment not found for user ${userId} in course ${courseId}`);
+//     }
+//   }
