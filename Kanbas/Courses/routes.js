@@ -67,7 +67,7 @@ export default function CourseRoutes(app) {
   });
 
   app.post("/api/courses/:courseId/assignments/:assignmentId", async (req, res) => {
-    console.log("new Assignment:", req.body);
+    // console.log("new Assignment:", req.body);
     const newAssignment = await assignmentsDao.createAssignment(req.body);
     res.send(newAssignment);
   });

@@ -4,7 +4,10 @@ import model from "./model.js";
 export async function findCoursesForUser(userId) {
   const enrollments = await model.find({ user: userId }).populate("course");
   // console.log("enrollments", enrollments);
-  return enrollments.map((enrollment) => enrollment.course);
+  // return enrollments.map((enrollment) => enrollment.course);
+    // Filter out enrollments where course is null
+    const validEnrollments = enrollments.filter((enrollment) => enrollment.course !== null);
+    return validEnrollments.map((enrollment) => enrollment.course);
  }
 
  export async function findUsersForCourse(courseId) {
@@ -20,6 +23,15 @@ export async function findCoursesForUser(userId) {
   return model.deleteOne({ user, course });
  }
 
+ export function unenrollUsersFromDeletedCourse(course){
+  return model.deleteMany({course: course});
+ }
+
+ export async function checkEnrollment(userId, courseId) {
+  // Find an enrollment document matching the userId and courseId
+  const enrollment = await model.findOne({ user: userId, course: courseId });
+  return !!enrollment; // Return true if found, false otherwise
+}
  
 // export async function enrollUserInCourse(userId, courseId) {
 // //   console.log("userId", "courseId", userId, courseId)

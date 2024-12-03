@@ -141,6 +141,7 @@ export default function UserRoutes(app) {
     const status = await enrollmentsDao.enrollUserInCourse(uid, cid);
     res.send(status);
   };
+  app.post("/api/users/:uid/courses/:cid", enrollUserInCourse);
 
   const unenrollUserFromCourse = async (req, res) => {
     let { uid, cid } = req.params;
@@ -152,8 +153,38 @@ export default function UserRoutes(app) {
     const status = await enrollmentsDao.unenrollUserFromCourse(uid, cid);
     res.send(status);
   };
-  app.post("/api/users/:uid/courses/:cid", enrollUserInCourse);
   app.delete("/api/users/:uid/courses/:cid", unenrollUserFromCourse); 
+
+  // Unenroll all users from a deleted course
+  app.delete("/api/users/:uid/courses/:courseId/enrollments", async (req, res) => {
+    const { courseId } = req.params;
+
+    try {
+      // Call the function to remove all enrollments for the course
+      const result = await enrollmentsDao.unenrollUsersFromDeletedCourse(courseId);
+
+      // Optionally log the result for debugging
+      // console.log(`Deleted ${result.deletedCount} enrollments for course ${courseId}`);
+
+      res.status(200).send({ message: `Successfully removed enrollments for course ${courseId}` });
+    } catch (error) {
+      // console.error("Error unenrolling users from course:", error);
+      res.status(500).send({ error: "Failed to unenroll users from course" });
+    }
+  });
+
+  // Route to check if a user is enrolled in a course
+  app.get("/api/users/:uid/courses/:cid/enrolled", async (req, res) => {
+    const { uid, cid } = req.params;
+    try {
+      const isEnrolled = await enrollmentsDao.checkEnrollment(uid, cid);
+      res.json({ enrolled: isEnrolled }); // Return a JSON response
+    } catch (error) {
+      console.error("Error checking enrollment:", error);
+      res.status(500).send("Internal Server Error");
+    }
+  });
+
 
   app.post("/api/users/current/courses", createCourse);
   // app.get("/api/users/:userId/courses", findCoursesForEnrolledUser);
