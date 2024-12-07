@@ -42,5 +42,7 @@ export function updateCourse(courseId, courseUpdates) {
     // return course;
 }
   
-
+export function fetchSpecificCourse(courseId){
+  return model.findById(courseId);
+}
 

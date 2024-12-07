@@ -34,6 +34,11 @@ export default function CourseRoutes(app) {
     res.json(course);
   }); 
 
+  app.get("/api/courses/:cid", async(req, res) => {
+    const course = await dao.fetchSpecificCourse(req.params.cid);
+    res.json(course);
+  })
+
   // ****** people
   const findUsersForCourse = async (req, res) => {
     const { cid } = req.params;
@@ -92,29 +97,29 @@ export default function CourseRoutes(app) {
 
 
 // ******quizzes routes
-app.post("/api/courses/:courseId/quizzes", (req, res) => {
-  const newQuiz = quizzesDao.createQuiz(req.body);
+app.post("/api/courses/:courseId/quizzes", async (req, res) => {
+  const newQuiz = await quizzesDao.createQuiz(req.body);
   res.json(newQuiz);
 });
 
-app.get("/api/courses/:courseId/quizzes/:quizId", (req, res) => {
-  const quiz = quizzesDao.findQuizByQuizId(req.params.quizId);
+app.get("/api/courses/:courseId/quizzes/:quizId", async (req, res) => {
+  const quiz = await quizzesDao.findQuizByQuizId(req.params.quizId);
   res.json(quiz);
 })
 
-app.get("/api/courses/:courseId/quizzes", (req, res) => {
-  const quizzes = quizzesDao.findQuizzesByCourseId(req.params.courseId);
+app.get("/api/courses/:courseId/quizzes", async (req, res) => {
+  const quizzes = await quizzesDao.findQuizzesByCourseId(req.params.courseId);
   res.json(quizzes);
 });
 
-app.put("/api/courses/:courseId/quizzes/:quizId", (req, res) => {
-  const updatedQuiz = quizzesDao.updateQuiz(req.params.quizId, req.body);
+app.put("/api/courses/:courseId/quizzes/:quizId", async (req, res) => {
+  const updatedQuiz = await quizzesDao.updateQuiz(req.params.quizId, req.body);
   res.json(updatedQuiz);
 });
 
-app.delete("/api/courses/:courseId/quizzes/:quizId", (req, res) => {
-  quizzesDao.deleteQuiz(req.params.quizId);
-  res.sendStatus(204);
+app.delete("/api/courses/:courseId/quizzes/:quizId", async (req, res) => {
+  const status = await quizzesDao.deleteQuiz(req.params.quizId);
+  res.send(status);
 });
 
 }
