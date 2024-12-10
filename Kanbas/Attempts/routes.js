@@ -63,14 +63,22 @@ export default function AttemptRoutes(app) {
     async (req, res) => {
       try {
         const { quizId, uid } = req.params;
-        const lastAttempt = await AttemptDao.fetchLastAttempt(quizId, uid);
-        // console.log("lastAttempt", lastAttempt);
+        // const lastAttempt = await AttemptDao.fetchLastAttempt(quizId, uid);
+        // // console.log("lastAttempt", lastAttempt);
 
-        if (!lastAttempt) {
-          return res.status(404).json({ message: "No attempt found" });
+        // if (!lastAttempt) {
+        //   return res.status(404).json({ message: "No attempt found" });
+        // }
+
+        // res.status(200).json(lastAttempt);
+        const attempts = await AttemptDao.fetchLastAttempt(quizId, uid);
+        if (!attempts) {
+            return res.status(404).json({ message: "No attempts found." });
         }
-
-        res.status(200).json(lastAttempt);
+        res.status(200).json({
+            totalAttempts: attempts.length,
+            lastAttempt: attempts.length > 0 ? attempts[0] : null,
+        });
       } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Failed to retrieve attempt" });

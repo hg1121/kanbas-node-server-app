@@ -5,5 +5,6 @@ export function addAttempt(attemptData) {
 }
 
 export function fetchLastAttempt(quizId, uid) {
-    return model.findOne({ studentId: uid, quizId: quizId }).sort({ createdAt: -1 }); // Use createdAt
+    // return model.findOne({ studentId: uid, quizId: quizId }).sort({ createdAt: -1 }); // Use createdAt
+    return model.find({ studentId: uid, quizId: quizId }).sort({ createdAt: -1 });
 }
